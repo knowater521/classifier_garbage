@@ -36,7 +36,7 @@ elif posi2 % 5 == 4:
 transform = transforms.Compose([
     transforms.Resize(size),
     transforms.RandomCrop(224),
-    #transforms.RandomHorizonotalFlip(),
+    transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
     transforms.RandomRotation(45),
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
