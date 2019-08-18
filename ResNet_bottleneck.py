@@ -269,6 +269,8 @@ def resnet152(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet152']))
     return model
+
+
 net = resnet50()
 print(net)
 batch_size = 64
@@ -277,12 +279,41 @@ data_loader_train = t.utils.data.DataLoader(dataset=dataset, batch_size=batch_si
 net = resnet50()
 cost = t.nn.CrossEntropyLoss()
 optimizer = t.optim.Adam(list(net.parameters()), lr=0.0001,weight_decay=1e-8)
-epochs = 2
-Loss_list = []
+#epochs = 2
+Loss_list = []   #
 Accurate_list = []
 
 net.train()
 
+for i, (X_data, X_label) in enumerate(data_loader_train):
+    #X_data, X_label
+    optimizer.zero_grad()
+    output = net(X_data)
+    loss = F.nll_loss(output, X_label)
+    loss.backward()
+    Loss_list.append(loss.item())
+    optimizer.step()
+
+    if i % 10 == 0:
+        print(i, loss.item())
+        
+net.eval()
+test_loss, correct = 0, 0
+
+with torch.no_grad():
+    for data, target in test_loader:
+        data, target = data.to(device), target.to(device)
+        output = model(data)
+        test_loss += F.nll_loss(output, target, size_average=False).item()
+        pred = output.argmax(1, keepdim=True)
+        correct += pred.eq(target.view_as(pred)).sum().item()
+
+test_loss /= len(test_data)
+acc = correct / len(test_data)
+print(acc, test_loss)
+
+
+'''
 for epoch in range(epochs):
     print("epoch " + str(epoch+1) + " start training...")
     run_loss = 0.0
@@ -346,3 +377,4 @@ plt.xlabel('Test loss vs. epoches')
 plt.ylabel('Test loss')
 plt.show()
 
+'''
