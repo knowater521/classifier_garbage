@@ -54,12 +54,16 @@ def data_divide(data_dir, train_dir, test_dir):
     for i in range(1000):#数据集最后一项的数字，不是数据集总数
         imgpath = data_dir + "img_" + str(i) + ".jpg"
         txtpath = data_dir + "img_" + str(i) + ".txt"
-        if os.path.isfile(imgpath):
+        if mox.file.exists(imgpath):
             if random.randint(0, 9) < 3:#30%概率数据选中为
+                #mox.file.copy(imgpath, test_dir)
+                #mox.file.copy(txtpath, test_dir)
                 shutil.copy(imgpath, test_dir)
                 shutil.copy(txtpath, test_dir)
                 print("No." + str(i) + " has been divided into testset\n")
             else:
+                #mox.file.copy(imgpath, train_dir)
+                #mox.file.copy(txtpath, train_dir)
                 shutil.copy(imgpath, train_dir)
                 shutil.copy(txtpath, train_dir)
                 print("No." + str(i) + " has been divided into trainset\n")
